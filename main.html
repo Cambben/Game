@@ -1,397 +1,458 @@
-<html><head><base href="https://websim.io/"><title>Empire Conquest: Strategy Game</title>
+<html><head><base href="https://www.resource-empire.com/"><title>Resource Empire: A Multiplayer Management Simulation</title>
 <style>
-  body, html {
+body, html {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
     height: 100%;
-    background-color: #f0f0f0;
-  }
-  .page {
-    display: none;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    color: #ecf0f1;
+}
+.game-container {
+    display: flex;
+    height: 100vh;
+}
+.sidebar {
+    width: 250px;
+    background: rgba(0,0,0,0.5);
     padding: 20px;
-    height: calc(100% - 60px);
     overflow-y: auto;
-  }
-  #navbar {
-    background-color: #333;
-    overflow: hidden;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  #navbar a {
-    float: left;
-    display: block;
-    color: #f2f2f2;
+}
+.main-area {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+h1, h2 {
+    margin-top: 0;
+    color: #f39c12;
+}
+.resource {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+}
+.building {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
     text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 17px;
-  }
-  #navbar a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-  #navbar a.active {
-    background-color: #4CAF50;
-    color: white;
-  }
-  #map-container {
-    width: 100%;
-    height: 500px;
-    background-color: #7CFC00;
-    position: relative;
-    overflow: hidden;
-  }
-  .control-point {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.building:hover {
+    transform: scale(1.05);
+}
+.building img {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
-    position: absolute;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-    text-shadow: 1px 1px 2px black;
-  }
-  .control-point.neutral {
-    background-color: #888;
-  }
-  .control-point.player {
-    background-color: #4CAF50;
-  }
-  .control-point.opponent {
-    background-color: #f44336;
-  }
-  #timer {
-    position: absolute;
+    margin-top: 10px;
+}
+#notification-area {
+    position: fixed;
     top: 10px;
     right: 10px;
-    font-size: 24px;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 5px 10px;
+    width: 300px;
+}
+.notification {
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
     border-radius: 5px;
-  }
-  .unit-button, .building-button {
-    margin: 10px;
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  .progress-bar {
-    width: 100%;
-    height: 20px;
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-  .progress {
-    width: 0;
-    height: 100%;
-    background-color: #4CAF50;
-    border-radius: 10px;
-    transition: width 0.5s;
-  }
-  #battlefield {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  .army-container {
-    width: 45%;
-    background-color: #ddd;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  .unit {
-    display: inline-block;
-    margin: 5px;
-    padding: 5px;
-    background-color: #fff;
-    border-radius: 3px;
-  }
-  #battle-log {
-    margin-top: 20px;
-    height: 200px;
-    overflow-y: scroll;
-    border: 1px solid #ccc;
-    padding: 10px;
-  }
-  #control-status {
-    margin-top: 20px;
-    font-size: 18px;
-  }
-  #army-deployment {
-    margin-top: 20px;
-  }
-  #army-deployment input {
-    width: 80px;
-    margin-right: 10px;
-  }
-  #control-point-select {
-    margin-right: 10px;
-  }
+    animation: fadeIn 0.5s, fadeOut 0.5s 2.5s forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
 </style>
 </head>
 <body>
-<div id="navbar">
-  <a href="#base" class="nav-link active" onclick="changePage('base')">Base</a>
-  <a href="#map" class="nav-link" onclick="changePage('map')">Map</a>
-  <a href="#army" class="nav-link" onclick="changePage('army')">Army</a>
-  <a href="#combat" class="nav-link" onclick="changePage('combat')">Combat</a>
-</div>
-
-<div id="base" class="page" style="display:block;">
-  <h1>Welcome to Your Base</h1>
-  <p>Manage your resources and build your empire from here.</p>
-  <h2>Resources</h2>
-  <p>Food: <span id="food-count">0</span></p>
-  <p>Stone: <span id="stone-count">0</span></p>
-  <h2>Buildings</h2>
-  <button class="building-button" onclick="buildStructure('house')">Build House (10 stone)</button>
-  <button class="building-button" onclick="buildStructure('farm')">Build Farm (5 stone)</button>
-  <p>Houses: <span id="house-count">0</span></p>
-  <p>Farms: <span id="farm-count">0</span></p>
-  <div id="farm-production">
-    <h3>Farm Production</h3>
-    <div class="progress-bar">
-      <div id="farm-progress" class="progress"></div>
+<div class="game-container">
+    <div class="sidebar">
+        <h1>Resource Empire</h1>
+        <div id="resources">
+            <!-- Resources will be dynamically added here -->
+        </div>
     </div>
-  </div>
-</div>
-
-<div id="map" class="page">
-  <h1>Control Point Map</h1>
-  <p>Send your armies to capture and hold control points. The more points you control, the faster you gather resources!</p>
-  <div id="map-container">
-    <div id="timer">10:00</div>
-    <div id="control-points"></div>
-  </div>
-  <div id="control-status">
-    <p>Points Controlled: <span id="points-controlled">0</span>/5</p>
-    <p>Resource Generation: <span id="resource-generation">0</span> food and stone per minute</p>
-  </div>
-  <div id="army-deployment">
-    <h2>Deploy Army</h2>
-    <select id="control-point-select">
-      <option value="">Select a control point</option>
-    </select>
-    <input type="number" id="soldiers-to-send" placeholder="Soldiers" min="0">
-    <input type="number" id="archers-to-send" placeholder="Archers" min="0">
-    <input type="number" id="knights-to-send" placeholder="Knights" min="0">
-    <button onclick="sendArmy()">Send Army</button>
-  </div>
-</div>
-
-<div id="army" class="page">
-  <h1>Your Army</h1>
-  <p>Recruit and manage your military units here.</p>
-  <button class="unit-button" onclick="recruitUnit('soldier')">Recruit Soldier (10 food)</button>
-  <button class="unit-button" onclick="recruitUnit('archer')">Recruit Archer (15 food)</button>
-  <button class="unit-button" onclick="recruitUnit('knight')">Recruit Knight (25 food)</button>
-  <h2>Army Composition</h2>
-  <p>Soldiers: <span id="soldier-count">0</span></p>
-  <p>Archers: <span id="archer-count">0</span></p>
-  <p>Knights: <span id="knight-count">0</span></p>
-  <p>Total Army Strength: <span id="army-strength">0</span></p>
-</div>
-
-<div id="combat" class="page">
-  <h1>Combat Arena</h1>
-  <p>Engage in battle with another player's army!</p>
-  <button onclick="initiateBattle()">Start Battle</button>
-  <div id="battlefield">
-    <div class="army-container" id="player-army">
-      <h3>Your Army</h3>
+    <div class="sidebar">
+        <h1>Resource Empire</h1>
+        <div id="Mountains">
+            <!-- Mountains will be dynamically added here -->
+        </div>
     </div>
-    <div class="army-container" id="opponent-army">
-      <h3>Opponent's Army</h3>
+    <div class="main-area">
+        <h2>Buildings</h2>
+        <div id="buildings">
+            <!-- Buildings will be dynamically added here -->
+        </div>
     </div>
-  </div>
-  <div id="battle-log"></div>
 </div>
+<div id="notification-area"></div>
 
 <script>
-const resources = { food: 0, stone: 0 };
-const buildings = { house: 0, farm: 0 };
-const army = { soldier: 0, archer: 0, knight: 0 };
-const controlPoints = [
-  { id: 1, controller: 'neutral', army: { soldier: 0, archer: 0, knight: 0 } },
-  { id: 2, controller: 'neutral', army: { soldier: 0, archer: 0, knight: 0 } },
-  { id: 3, controller: 'neutral', army: { soldier: 0, archer: 0, knight: 0 } },
-  { id: 4, controller: 'neutral', army: { soldier: 0, archer: 0, knight: 0 } },
-  { id: 5, controller: 'neutral', army: { soldier: 0, archer: 0, knight: 0 } }
-];
-let playerControlledPoints = 0;
-let timeLeft = 600; // 10 minutes in seconds
-let farmProgress = 0;
+const resources = {
+    gold: { name: "Gold", amount: 1000, perSecond: 1 },
+    wood: { name: "Wood", amount: 500, perSecond: 2 },
+    stone: { name: "Stone", amount: 300, perSecond: 1 },
+    food: { name: "Food", amount: 1000, perSecond: 5 },
+    Defense: { name: "Defense", amount: 1000, perSecond: 0 },
+};
 
-function changePage(pageId) {
-  const pages = document.getElementsByClassName('page');
-  for (let page of pages) {
-    page.style.display = 'none';
-  }
-  document.getElementById(pageId).style.display = 'block';
-  
-  const links = document.getElementsByClassName('nav-link');
-  for (let link of links) {
-    link.classList.remove('active');
-  }
-  event.currentTarget.classList.add('active');
+const buildings = {
+    mine: { name: "Gold Mine", cost: { wood: 100 }, produces: { gold: 10 } },
+    lumbermill: { name: "Lumber Mill", cost: { gold: 100 }, produces: { wood: 2 } },
+    quarry: { name: "Stone Quarry", cost: { gold: 250, wood: 150 }, produces: { stone: 1 } },
+    farm: { name: "Farm", cost: { gold: 100, wood: 75 }, produces: { food: 3 } },
+    university: { name: "University", cost: { gold: 10, wood: 70 }, produces: { Defense: 3 } }
+};
 
-  if (pageId === 'map') {
-    initializeMap();
-    startControlCheck();
-  }
-  if (pageId !== 'map' && controlPoints.length > 0) {
-    controlPoints.forEach(point => {
-      point.controller = 'neutral';
-      point.army = { soldier: 0, archer: 0, knight: 0 };
+function updateResources() {
+    const resourcesContainer = document.getElementById('resources');
+    resourcesContainer.innerHTML = '';
+    Object.keys(resources).forEach(key => {
+        const resource = resources[key];
+        const resourceElement = document.createElement('div');
+        resourceElement.className = 'resource';
+        resourceElement.innerHTML = `
+            <strong>${resource.name}:</strong> ${Math.floor(resource.amount)}
+            <small>(+${resource.perSecond}/s)</small>
+        `;
+        resourcesContainer.appendChild(resourceElement);
     });
-    playerControlledPoints = 0;
-    updateControlStatus();
-  }
 }
 
-function initializeMap() {
-  const mapContainer = document.getElementById('map-container');
-  mapContainer.innerHTML = '<div id="timer">10:00</div><div id="control-points"></div>';
-  const controlPointsContainer = document.getElementById('control-points');
-  const controlPointSelect = document.getElementById('control-point-select');
-  
-  controlPoints.forEach((point, index) => {
-    const controlPoint = document.createElement('div');
-    controlPoint.className = 'control-point neutral';
-    controlPoint.style.left = Math.random() * (mapContainer.offsetWidth - 60) + 'px';
-    controlPoint.style.top = Math.random() * (mapContainer.offsetHeight - 60) + 'px';
-    controlPoint.innerHTML = point.id;
-    controlPointsContainer.appendChild(controlPoint);
-
-    const option = document.createElement('option');
-    option.value = index;
-    option.textContent = `Control Point ${point.id}`;
-    controlPointSelect.appendChild(option);
-  });
-  
-  updateControlStatus();
+function createBuildings() {
+    const buildingsContainer = document.getElementById('buildings');
+    Object.keys(buildings).forEach(key => {
+        const building = buildings[key];
+        const buildingElement = document.createElement('div');
+        buildingElement.className = 'building';
+        buildingElement.innerHTML = `
+            <img alt="${building.name} icon" src="${key}.svg" width="60" height="60">
+            <div>${building.name}</div>
+        `;
+        buildingElement.onclick = () => buyBuilding(key);
+        buildingsContainer.appendChild(buildingElement);
+    });
 }
 
-function sendArmy() {
-  const pointIndex = document.getElementById('control-point-select').value;
-  const soldiers = parseInt(document.getElementById('soldiers-to-send').value) || 0;
-  const archers = parseInt(document.getElementById('archers-to-send').value) || 0;
-  const knights = parseInt(document.getElementById('knights-to-send').value) || 0;
-
-  if (pointIndex === "") {
-    alert("Please select a control point.");
-    return;
-  }
-
-  if (soldiers + archers + knights === 0) {
-    alert("Please send at least one unit.");
-    return;
-  }
-
-  if (soldiers > army.soldier || archers > army.archer || knights > army.knight) {
-    alert("You don't have enough units.");
-    return;
-  }
-
-  army.soldier -= soldiers;
-  army.archer -= archers;
-  army.knight -= knights;
-
-  controlPoints[pointIndex].army.soldier += soldiers;
-  controlPoints[pointIndex].army.archer += archers;
-  controlPoints[pointIndex].army.knight += knights;
-
-  controlPoints[pointIndex].controller = 'player';
-
-  updateArmyDisplay();
-  updateControlPointDisplay();
-  updateControlStatus();
-
-  alert(`Army sent to Control Point ${controlPoints[pointIndex].id}`);
-}
-
-function updateControlPointDisplay() {
-  const controlPointElements = document.querySelectorAll('.control-point');
-  controlPoints.forEach((point, index) => {
-    controlPointElements[index].className = `control-point ${point.controller}`;
-  });
-}
-
-function updateControlStatus() {
-  const playerControlledPoints = controlPoints.filter(point => point.controller === 'player').length;
-  document.getElementById('points-controlled').textContent = playerControlledPoints;
-  const resourceGeneration = playerControlledPoints * 2; // 2 resources per control point per minute
-  document.getElementById('resource-generation').textContent = resourceGeneration;
-}
-
-let controlCheckInterval;
-
-function startControlCheck() {
-  controlCheckInterval = setInterval(checkControlPoints, 300000); // 5 minutes in milliseconds
-}
-
-function checkControlPoints() {
-  controlPoints.forEach(point => {
-    if (point.controller !== 'player') {
-      const opponentStrength = Math.floor(Math.random() * 50) + 10; // Random opponent strength
-      const playerStrength = point.army.soldier + point.army.archer * 2 + point.army.knight * 3;
-      
-      if (playerStrength > opponentStrength) {
-        point.controller = 'player';
-      } else {
-        point.controller = 'opponent';
-        point.army = { soldier: 0, archer: 0, knight: 0 };
-      }
+function buyBuilding(buildingKey) {
+    const building = buildings[buildingKey];
+    if (canAfford(building.cost)) {
+        Object.keys(building.cost).forEach(resource => {
+            resources[resource].amount -= building.cost[resource];
+        });
+        Object.keys(building.produces).forEach(resource => {
+            resources[resource].perSecond += building.produces[resource];
+        });
+        updateResources();
+        notify(`${building.name} purchased!`);
+    } else {
+        notify("Not enough resources!", "error");
     }
-  });
-
-  updateControlPointDisplay();
-  updateControlStatus();
 }
 
-// Modify the existing updateTimer function
-function updateTimer() {
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
-  document.getElementById('timer').textContent = 
-    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  
-  if (timeLeft === 0) {
-    clearInterval(timerInterval);
-    clearInterval(farmInterval);
-    clearInterval(resourceInterval);
-    clearInterval(controlCheckInterval);
-    endGame();
-  } else {
-    timeLeft--;
-    generateResources();
-  }
+function canAfford(cost) {
+    return Object.keys(cost).every(resource => resources[resource].amount >= cost[resource]);
 }
 
-// Modify the existing generateResources function
-function generateResources() {
-  const playerControlledPoints = controlPoints.filter(point => point.controller === 'player').length;
-  const resourcesPerPoint = 2 / 60; // 2 resources per minute, divided by 60 for per-second rate
-  const generatedResources = playerControlledPoints * resourcesPerPoint;
-  resources.food += generatedResources;
-  resources.stone += generatedResources;
-  updateResourceDisplay();
+function notify(message, type = "success") {
+    const notificationArea = document.getElementById('notification-area');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notificationArea.appendChild(notification);
+    setTimeout(() => {
+        notificationArea.removeChild(notification);
+    }, 3000);
 }
 
-// Initialize game
-updateResourceDisplay();
-updateArmyDisplay();
-const timerInterval = setInterval(updateTimer, 1000);
-const farmInterval = setInterval(updateFarmProduction, 1000);
-const resourceInterval = setInterval(generateResources, 1000);
+function gameLoop() {
+    Object.keys(resources).forEach(key => {
+        resources[key].amount += resources[key].perSecond / 10;  // Divide by 10 for smoother updates
+    });
+    updateResources();
+}
+
+createBuildings();
+updateResources();
+setInterval(gameLoop, 100);  // Update 10 times per second for smoother resource increments
+
+// Simulating other players' actions
+setInterval(() => {
+    const randomResource = Object.keys(resources)[Math.floor(Math.random() * Object.keys(resources).length)];
+    const randomAmount = Math.floor(Math.random() * 10) + 1;
+    resources[randomResource].amount += randomAmount;
+    notify(`Another player found ${randomAmount} ${resources[randomResource].name}!`);
+}, 5000);
 </script>
 </body></html>
+
+<html><head><base href="https://websim-map.example.com/" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Control Map</title>
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+      }
+      #map-container {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        background-color: #f0f0f0;
+      }
+      .region {
+        position: absolute;
+        border: 2px solid #333;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      .region:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      }
+      .resource-icon {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+      }
+      #info-panel {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+    </style>
+    </head>
+    <body>
+    <div id="map-container"></div>
+    <div id="info-panel"></div>
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+    const mapContainer = d3.select("#map-container");
+    const infoPanel = d3.select("#info-panel");
+    
+    const regions = [
+      { name: "Forestlands", x: 10, y: 10, width: 200, height: 150, color: "#4CAF50", resources: ["wood", "fruits"] },
+      { name: "Mountains", x: 220, y: 10, width: 180, height: 200, color: "#795548", resources: ["ore", "gems"] },
+      { name: "Plains", x: 10, y: 170, width: 250, height: 120, color: "#FFC107", resources: ["wheat", "cattle"] },
+      { name: "Coastal", x: 270, y: 220, width: 220, height: 140, color: "#03A9F4", resources: ["fish", "salt"] }
+    ];
+    
+    const resourceIcons = {
+      wood: "🌳", fruits: "🍎", ore: "⛏️", gems: "💎",
+      wheat: "🌾", cattle: "🐄", fish: "🐟", salt: "🧂"
+    };
+    
+    function createRegions() {
+      mapContainer.selectAll(".region")
+        .data(regions)
+        .enter()
+        .append("div")
+        .attr("class", "region")
+        .style("left", d => `${d.x}px`)
+        .style("top", d => `${d.y}px`)
+        .style("width", d => `${d.width}px`)
+        .style("height", d => `${d.height}px`)
+        .style("background-color", d => d.color)
+        .on("click", showRegionInfo)
+        .each(function(d) {
+          const region = d3.select(this);
+          d.resources.forEach((resource, i) => {
+            region.append("div")
+              .attr("class", "resource-icon")
+              .style("left", `${10 + i * 40}px`)
+              .style("top", "10px")
+              .text(resourceIcons[resource]);
+          });
+        });
+    }
+    
+    function showRegionInfo(event, d) {
+      infoPanel.html(`
+        <h3>${d.name}</h3>
+        <p>Resources: ${d.resources.join(", ")}</p>
+        <button onclick="harvestResource('${d.name}')">Harvest Resources</button>
+      `);
+    }
+    
+    function harvestResource(regionName) {
+      const region = regions.find(r => r.name === regionName);
+      const harvestedResource = region.resources[Math.floor(Math.random() * region.resources.length)];
+      alert(`You've harvested ${harvestedResource} from ${regionName}!`);
+    }
+    
+    createRegions();
+    </script>
+    </body></html>
+
+    <html><head><base href="https://bensgame.com/">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ben's Base Building Game</title>
+        <style>
+          body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+          }
+          #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+          }
+          #game-board {
+            display: grid;
+            grid-template-columns: repeat(5, 100px);
+            grid-gap: 10px;
+            margin-bottom: 20px;
+          }
+          .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #34495e;
+            border: 2px solid #2c3e50;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+          .cell:hover {
+            background-color: #3498db;
+          }
+          .player1 { color: #e74c3c; }
+          .player2 { color: #2ecc71; }
+          #status {
+            font-size: 24px;
+            margin-bottom: 20px;
+          }
+          button {
+            font-size: 18px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+          }
+          button:hover {
+            background-color: #2980b9;
+          }
+        </style>
+        </head>
+        <body>
+          <div id="game-container">
+            <h1>Ben's Base Building Game</h1>
+            <div id="status">Player 1's turn</div>
+            <div id="game-board"></div>
+            <button id="reset-btn">Reset Game</button>
+          </div>
+        
+          <script>
+            const gameBoard = document.getElementById('game-board');
+            const status = document.getElementById('status');
+            const resetBtn = document.getElementById('reset-btn');
+            let currentPlayer = 1;
+            let gameState = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+        
+            function createBoard() {
+              gameBoard.innerHTML = '';
+              for (let i = 0; i < 25; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleCellClick);
+                gameBoard.appendChild(cell);
+              }
+            }
+        
+            function handleCellClick(e) {
+              const index = e.target.dataset.index;
+              if (gameState[index] === '') {
+                gameState[index] = currentPlayer;
+                e.target.textContent = currentPlayer === 1 ? '🏠' : '🏢';
+                e.target.classList.add(currentPlayer === 1 ? 'player1' : 'player2');
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+                status.textContent = `Player ${currentPlayer}'s turn`;
+                checkWinner();
+              }
+            }
+        
+            function checkWinner() {
+              const winPatterns = [
+                [0, 1, 2], [1, 2, 3], [2, 3, 4],
+                [5, 6, 7], [6, 7, 8], [7, 8, 9],
+                [10, 11, 12], [11, 12, 13], [12, 13, 14],
+                [15, 16, 17], [16, 17, 18], [17, 18, 19],
+                [20, 21, 22], [21, 22, 23], [22, 23, 24],
+                [0, 5, 10], [5, 10, 15], [10, 15, 20],
+                [1, 6, 11], [6, 11, 16], [11, 16, 21],
+                [2, 7, 12], [7, 12, 17], [12, 17, 22],
+                [3, 8, 13], [8, 13, 18], [13, 18, 23],
+                [4, 9, 14], [9, 14, 19], [14, 19, 24],
+                [0, 6, 12], [1, 7, 13], [2, 8, 14],
+                [10, 6, 2], [11, 7, 3], [12, 8, 4],
+                [5, 11, 17], [6, 12, 18], [7, 13, 19],
+                [15, 11, 7], [16, 12, 8], [17, 13, 9],
+                [20, 16, 12], [21, 17, 13], [22, 18, 14]
+              ];
+        
+              for (const pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                  status.textContent = `Player ${gameState[a]} wins!`;
+                  disableBoard();
+                  return;
+                }
+              }
+        
+              if (!gameState.includes('')) {
+                status.textContent = "It's a draw!";
+                disableBoard();
+              }
+            }
+        
+            function disableBoard() {
+              const cells = document.querySelectorAll('.cell');
+              cells.forEach(cell => cell.removeEventListener('click', handleCellClick));
+            }
+        
+            function resetGame() {
+              currentPlayer = 1;
+              gameState = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+              status.textContent = "Player 1's turn";
+              createBoard();
+            }
+        
+            resetBtn.addEventListener('click', resetGame);
+            createBoard();
+          </script>
+        </body></html>
