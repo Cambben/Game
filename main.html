@@ -1,4 +1,4 @@
-<html><head><base href="https://www.resource-empire.com/"><title>Resource Empire: A Multiplayer Management Simulation</title>
+<html><head><base href="https://www.resource-empire.com/"><title>Resource Empire: Defeat the Mighty Boss!</title>
 <style>
 body, html {
     margin: 0;
@@ -22,18 +22,20 @@ body, html {
     flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 h1, h2 {
     margin-top: 0;
     color: #f39c12;
 }
-.resource {
+.resource, .unit {
     margin-bottom: 10px;
     padding: 10px;
     background: rgba(255,255,255,0.1);
     border-radius: 5px;
 }
-.building {
+.building, .recruit-btn, #boss-button {
     display: inline-block;
     width: 100px;
     height: 100px;
@@ -44,13 +46,24 @@ h1, h2 {
     cursor: pointer;
     transition: transform 0.3s ease;
 }
-.building:hover {
+.building:hover, .recruit-btn:hover, #boss-button:hover {
     transform: scale(1.05);
 }
-.building img {
+.building img, .recruit-btn img {
     width: 60px;
     height: 60px;
     margin-top: 10px;
+}
+.cost {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    font-size: 0.8em;
+    padding: 2px;
+    border-radius: 3px;
 }
 #notification-area {
     position: fixed;
@@ -74,47 +87,200 @@ h1, h2 {
     from { opacity: 1; }
     to { opacity: 0; }
 }
+#boss-button {
+    background: linear-gradient(45deg, #c0392b, #e74c3c);
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+    width: 200px;
+    height: 60px;
+    line-height: 60px;
+    margin-top: 20px;
+}
+#boss-health-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #e74c3c;
+    margin-top: 10px;
+    position: relative;
+}
+#boss-health {
+    width: 100%;
+    height: 100%;
+    background-color: #2ecc71;
+    transition: width 0.3s ease;
+}
+#boss-health-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    font-weight: bold;
+}
+#timer {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #f39c12;
+}
+.building, .recruit-btn {
+    position: relative;
+}
+.defense-value, .strength-value {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+}
+#defense-page {
+    display: none;
+    padding: 20px;
+    background: rgba(0,0,0,0.7);
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+#back-to-main {
+    margin-top: 20px;
+    padding: 10px;
+    background: #3498db;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#boss-info {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+}
+#start-reset-game {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+#start-reset-game:hover {
+    background-color: #27ae60;
+}
+#boss-stats {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+}
+#boss-stats div {
+    margin-bottom: 5px;
+}
 </style>
 </head>
 <body>
 <div class="game-container">
     <div class="sidebar">
         <h1>Resource Empire</h1>
+        <button id="start-reset-game">Start/Reset Game</button>
+        <div id="timer">Time: 00:00:00</div>
         <div id="resources">
             <!-- Resources will be dynamically added here -->
         </div>
-    </div>
-    <div class="sidebar">
-        <h1>Resource Empire</h1>
-        <div id="Mountains">
-            <!-- Mountains will be dynamically added here -->
+        <h2>Population</h2>
+        <div id="population"></div>
+        <h2>Army</h2>
+        <div id="army">
+            <!-- Army units will be dynamically added here -->
         </div>
+        <h2>Boss Attack Timer</h2>
+        <div id="boss-attack-timer">Next attack in: 02:00</div>
     </div>
     <div class="main-area">
         <h2>Buildings</h2>
         <div id="buildings">
             <!-- Buildings will be dynamically added here -->
         </div>
+        <h2>Recruitment</h2>
+        <div id="recruitment">
+            <!-- Recruitment buttons will be dynamically added here -->
+        </div>
+        <h2>Empire Defense and Strength</h2>
+        <div id="empire-defense"></div>
+        <div id="empire-strength"></div>
+        <h2>Boss Stats</h2>
+        <div id="boss-stats">
+            <div id="boss-health-stat"></div>
+            <div id="boss-strength-stat"></div>
+        </div>
+        <h2>Boss Battle</h2>
+        <div id="boss-battle">
+            <div id="boss-button">Fight the Boss!</div>
+            <div id="boss-health-bar">
+                <div id="boss-health"></div>
+                <div id="boss-health-text">100%</div>
+            </div>
+        </div>
     </div>
 </div>
 <div id="notification-area"></div>
-
+<div id="defense-page">
+    <h2>Empire Defense and Strength</h2>
+    <div id="empire-stats"></div>
+    <div id="boss-info">
+        <h3>Boss Information</h3>
+        <div id="boss-strength"></div>
+        <div id="boss-attack-timer"></div>
+    </div>
+    <button id="back-to-main">Back to Main Page</button>
+</div>
 <script>
 const resources = {
-    gold: { name: "Gold", amount: 1000, perSecond: 1 },
-    wood: { name: "Wood", amount: 500, perSecond: 2 },
-    stone: { name: "Stone", amount: 300, perSecond: 1 },
-    food: { name: "Food", amount: 1000, perSecond: 5 },
-    Defense: { name: "Defense", amount: 1000, perSecond: 0 },
+    gold: { name: "Gold", amount: 1000, perSecond: 1, initialAmount: 1000 },
+    wood: { name: "Wood", amount: 500, perSecond: 2, initialAmount: 500 },
+    stone: { name: "Stone", amount: 300, perSecond: 1, initialAmount: 300 },
+    food: { name: "Food", amount: 1000, perSecond: 5, initialAmount: 1000 },
+    iron: { name: "Iron", amount: 200, perSecond: 1, initialAmount: 200 }
 };
 
 const buildings = {
-    mine: { name: "Gold Mine", cost: { wood: 100 }, produces: { gold: 10 } },
-    lumbermill: { name: "Lumber Mill", cost: { gold: 100 }, produces: { wood: 2 } },
-    quarry: { name: "Stone Quarry", cost: { gold: 250, wood: 150 }, produces: { stone: 1 } },
-    farm: { name: "Farm", cost: { gold: 100, wood: 75 }, produces: { food: 3 } },
-    university: { name: "University", cost: { gold: 10, wood: 70 }, produces: { Defense: 3 } }
+    mine: { name: "Gold Mine", cost: { gold: 20, wood: 10 }, produces: { gold: 100 } },
+    lumbermill: { name: "Lumber Mill", cost: { gold: 15, wood: 50 }, produces: { wood: 200 } },
+    quarry: { name: "Stone Quarry", cost: { gold: 25, wood: 15 }, produces: { stone: 100 } },
+    farm: { name: "Farm", cost: { gold: 10, wood: 10 }, produces: { food: 300 } },
+    ironmine: { name: "Iron Mine", cost: { gold: 300, wood: 200 }, produces: { iron: 100 } },
+    university: { name: "University", cost: { gold: 200, wood: 200, stone: 100 }, produces: {} },
+    wall: { name: "Wall", cost: { stone: 50, wood: 20 }, defense: 10 }
 };
+
+let wallDefense = 0;
+
+const units = {
+    soldier: { name: "Soldier", cost: { gold: 50, food: 20 }, strength: 5, defense: 3, upgradeBonus: { strength: 1, defense: 1 } },
+    archer: { name: "Archer", cost: { food: 70, wood: 30 }, strength: 7, defense: 2, upgradeBonus: { strength: 2, defense: 0.5 } },
+    knight: { name: "Knight", cost: { food: 100, iron: 50 }, strength: 10, defense: 8, upgradeBonus: { strength: 2, defense: 2 } },
+    siege: { name: "Siege Engine", cost: { gold: 200, wood: 100, iron: 50 }, strength: 15, defense: 5, upgradeBonus: { strength: 3, defense: 1 } }
+};
+
+const army = {
+    soldier: 0,
+    archer: 0,
+    knight: 0,
+    siege: 0
+};
+
+let population = 10000; // Starting population
+let bossHealth = 10000;
+const bossMaxHealth = 10000;
+let gameTime = 0;
+let lastBossAttackTime = 0;
+let bossAttackTimer = 120; // 2 minutes in seconds
 
 function updateResources() {
     const resourcesContainer = document.getElementById('resources');
@@ -131,6 +297,26 @@ function updateResources() {
     });
 }
 
+function updatePopulation() {
+    const populationElement = document.getElementById('population');
+    populationElement.innerHTML = `<div class="resource"><strong>Population:</strong> ${population}</div>`;
+}
+
+function updateArmy() {
+    const armyContainer = document.getElementById('army');
+    armyContainer.innerHTML = '';
+    Object.keys(army).forEach(key => {
+        const unit = units[key];
+        const unitElement = document.createElement('div');
+        unitElement.className = 'unit';
+        unitElement.innerHTML = `
+            <strong>${unit.name}:</strong> ${army[key]}
+            <small>(Strength: ${unit.strength}, Defense: ${unit.defense})</small>
+        `;
+        armyContainer.appendChild(unitElement);
+    });
+}
+
 function createBuildings() {
     const buildingsContainer = document.getElementById('buildings');
     Object.keys(buildings).forEach(key => {
@@ -140,9 +326,26 @@ function createBuildings() {
         buildingElement.innerHTML = `
             <img alt="${building.name} icon" src="${key}.svg" width="60" height="60">
             <div>${building.name}</div>
+            <div class="cost">${formatCost(building.cost)}</div>
         `;
         buildingElement.onclick = () => buyBuilding(key);
         buildingsContainer.appendChild(buildingElement);
+    });
+}
+
+function createRecruitmentButtons() {
+    const recruitmentContainer = document.getElementById('recruitment');
+    Object.keys(units).forEach(key => {
+        const unit = units[key];
+        const buttonElement = document.createElement('div');
+        buttonElement.className = 'recruit-btn';
+        buttonElement.innerHTML = `
+            <img alt="${unit.name} icon" src="${key}.svg" width="60" height="60">
+            <div>${unit.name}</div>
+            <div class="cost">${formatCost(unit.cost)}</div>
+        `;
+        buttonElement.onclick = () => recruitUnit(key);
+        recruitmentContainer.appendChild(buttonElement);
     });
 }
 
@@ -152,13 +355,43 @@ function buyBuilding(buildingKey) {
         Object.keys(building.cost).forEach(resource => {
             resources[resource].amount -= building.cost[resource];
         });
-        Object.keys(building.produces).forEach(resource => {
-            resources[resource].perSecond += building.produces[resource];
-        });
+        if (buildingKey === 'wall') {
+            wallDefense += building.defense;
+        } else {
+            Object.keys(building.produces).forEach(resource => {
+                resources[resource].perSecond += building.produces[resource];
+            });
+        }
         updateResources();
+        updateWallDefense();
         notify(`${building.name} purchased!`);
     } else {
         notify("Not enough resources!", "error");
+    }
+}
+
+function updateWallDefense() {
+    const empireDefenseElement = document.getElementById('empire-defense');
+    empireDefenseElement.innerHTML = `
+        <div class="defense-value">
+            <strong>Wall Defense:</strong> ${wallDefense}
+        </div>
+        ${empireDefenseElement.innerHTML}
+    `;
+}
+
+function recruitUnit(unitKey) {
+    const unit = units[unitKey];
+    if (canAfford(unit.cost)) {
+        Object.keys(unit.cost).forEach(resource => {
+            resources[resource].amount -= unit.cost[resource];
+        });
+        army[unitKey]++;
+        updateResources();
+        updateArmy();
+        notify(`${unit.name} recruited!`);
+    } else {
+        notify("Not enough resources to recruit!", "error");
     }
 }
 
@@ -177,282 +410,177 @@ function notify(message, type = "success") {
     }, 3000);
 }
 
-function gameLoop() {
-    Object.keys(resources).forEach(key => {
-        resources[key].amount += resources[key].perSecond / 10;  // Divide by 10 for smoother updates
-    });
-    updateResources();
+function updateTimer() {
+    const hours = Math.floor(gameTime / 3600);
+    const minutes = Math.floor((gameTime % 3600) / 60);
+    const seconds = gameTime % 60;
+    document.getElementById('timer').textContent = `Time: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
-createBuildings();
-updateResources();
-setInterval(gameLoop, 100);  // Update 10 times per second for smoother resource increments
+function formatCost(cost) {
+    return Object.entries(cost).map(([resource, amount]) => `${amount} ${resource}`).join(', ');
+}
 
-// Simulating other players' actions
+function fightBoss() {
+    const totalEmpireStrength = Object.keys(army).reduce((sum, unit) => {
+        return sum + army[unit] * units[unit].strength;
+    }, 0);
+    
+    const damage = Math.floor(totalEmpireStrength * (Math.random() * 0.5 + 0.75));
+    bossHealth = Math.max(0, bossHealth - damage);
+    updateBossHealth();
+    updateBossStats();
+
+    if (bossHealth > 0) {
+        notify(`You dealt ${damage} damage to the boss! Take that bad boy down`);
+    } else {
+        notify("Congratulations! You've defeated the boss and won the game!", "success");
+        document.getElementById('boss-button').style.display = 'none';
+        return;
+    }
+
+    const bossStrength = bossMaxHealth / 100;
+    const bossDamage = Math.floor(bossStrength * (Math.random() * 0.5 + 0.75));
+    
+    let remainingDamage = bossDamage;
+
+    // Attack walls first
+    if (wallDefense > 0) {
+        const wallDamageTaken = Math.min(wallDefense, remainingDamage);
+        wallDefense -= wallDamageTaken;
+        remainingDamage -= wallDamageTaken;
+    }
+
+    // Attack soldiers
+    if (remainingDamage > 0 && army.soldier > 0) {
+        const soldierDefense = units.soldier.defense * army.soldier;
+        const soldierDamageTaken = Math.min(soldierDefense, remainingDamage);
+        const soldiersLost = Math.ceil(soldierDamageTaken / units.soldier.defense);
+        army.soldier -= soldiersLost;
+        remainingDamage -= soldierDamageTaken;
+    }
+
+    // Attack archers
+    if (remainingDamage > 0 && army.archer > 0) {
+        const archerDefense = units.archer.defense * army.archer;
+        const archerDamageTaken = Math.min(archerDefense, remainingDamage);
+        const archersLost = Math.ceil(archerDamageTaken / units.archer.defense);
+        army.archer -= archersLost;
+        remainingDamage -= archerDamageTaken;
+    }
+
+    // Damage population if there's remaining damage
+    if (remainingDamage > 0) {
+        const populationLost = Math.min(population, Math.ceil(remainingDamage));
+        population -= populationLost;
+
+        if (population <= 0) {
+            gameOver();
+        }
+    }
+
+    notify(`The boss attacked!`, "error");
+    updateArmy();
+}
+
+function updateBossHealth() {
+    const healthBar = document.getElementById('boss-health');
+    const healthText = document.getElementById('boss-health-text');
+    const healthPercentage = (bossHealth / bossMaxHealth) * 100;
+    healthBar.style.width = `${healthPercentage}%`;
+    healthText.textContent = `${Math.round(healthPercentage)}%`;
+}
+
+function updateBossStats() {
+    const bossHealthStat = document.getElementById('boss-health-stat');
+    const bossStrengthStat = document.getElementById('boss-strength-stat');
+    
+    const healthPercentage = (bossHealth / bossMaxHealth) * 100;
+    bossHealthStat.innerHTML = `<strong>Boss Health:</strong> ${Math.round(bossHealth)} / ${bossMaxHealth} (${Math.round(healthPercentage)}%)`;
+    
+    const bossStrength = bossMaxHealth / 100;
+    bossStrengthStat.innerHTML = `<strong>Boss Strength:</strong> ${Math.round(bossStrength)}`;
+}
+
+function updateEmpireDefenseAndStrength() {
+    const totalDefense = wallDefense + Object.keys(army).reduce((sum, unit) => {
+        return sum + army[unit] * units[unit].defense;
+    }, 0);
+
+    const totalStrength = Object.keys(army).reduce((sum, unit) => {
+        return sum + army[unit] * units[unit].strength;
+    }, 0);
+
+    const empireDefenseElement = document.getElementById('empire-defense');
+    empireDefenseElement.innerHTML = `
+        <div class="defense-value">
+            <strong>Total Empire Defense:</strong> ${totalDefense.toFixed(1)}
+        </div>
+    `;
+
+    const empireStrengthElement = document.getElementById('empire-strength');
+    empireStrengthElement.innerHTML = `
+        <div class="strength-value">
+            <strong>Total Empire Strength:</strong> ${totalStrength.toFixed(1)}
+        </div>
+    `;
+}
+
+function startResetGame() {
+    Object.keys(resources).forEach(key => {
+        resources[key].amount = resources[key].initialAmount;
+    });
+    Object.keys(army).forEach(key => {
+        army[key] = 0;
+    });
+    population = 10000;
+    bossHealth = bossMaxHealth;
+    gameTime = 0;
+    lastBossAttackTime = 0;
+    bossAttackTimer = 120;
+
+    updateResources();
+    updateArmy();
+    updateBossHealth();
+    updateEmpireDefenseAndStrength();
+    updatePopulation();
+    updateWallDefense();
+    updateBossStats();
+    notify("Game started/reset!", "success");
+    document.getElementById('boss-button').style.display = 'block';
+}
+
+function updateBossAttackTimer() {
+    const minutes = Math.floor(bossAttackTimer / 60);
+    const seconds = bossAttackTimer % 60;
+    document.getElementById('boss-attack-timer').textContent = `Next attack in: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+document.getElementById('start-reset-game').addEventListener('click', startResetGame);
+createBuildings();
+createRecruitmentButtons();
+updateResources();
+updateArmy();
+updateBossHealth();
+updateEmpireDefenseAndStrength();
+updatePopulation();
+updateBossStats();
 setInterval(() => {
-    const randomResource = Object.keys(resources)[Math.floor(Math.random() * Object.keys(resources).length)];
-    const randomAmount = Math.floor(Math.random() * 10) + 1;
-    resources[randomResource].amount += randomAmount;
-    notify(`Another player found ${randomAmount} ${resources[randomResource].name}!`);
-}, 5000);
+    Object.keys(resources).forEach(key => {
+        resources[key].amount += resources[key].perSecond / 10;  
+    });
+    updateResources();
+    updatePopulation();
+    gameTime++;
+    updateTimer();
+    updateEmpireDefenseAndStrength();
+    bossAttackTimer--;
+    updateBossAttackTimer();
+    if (bossAttackTimer <= 0) {
+        fightBoss();
+        bossAttackTimer = 120; // Reset timer after attack
+    }
+}, 1000);
+document.getElementById('boss-button').addEventListener('click', fightBoss);
 </script>
 </body></html>
-
-<html><head><base href="https://websim-map.example.com/" />
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resource Control Map</title>
-    <style>
-      body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        font-family: Arial, sans-serif;
-      }
-      #map-container {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        overflow: hidden;
-        background-color: #f0f0f0;
-      }
-      .region {
-        position: absolute;
-        border: 2px solid #333;
-        transition: all 0.3s ease;
-        cursor: pointer;
-      }
-      .region:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(0,0,0,0.3);
-      }
-      .resource-icon {
-        position: absolute;
-        width: 30px;
-        height: 30px;
-      }
-      #info-panel {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: white;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      }
-    </style>
-    </head>
-    <body>
-    <div id="map-container"></div>
-    <div id="info-panel"></div>
-    
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script>
-    const mapContainer = d3.select("#map-container");
-    const infoPanel = d3.select("#info-panel");
-    
-    const regions = [
-      { name: "Forestlands", x: 10, y: 10, width: 200, height: 150, color: "#4CAF50", resources: ["wood", "fruits"] },
-      { name: "Mountains", x: 220, y: 10, width: 180, height: 200, color: "#795548", resources: ["ore", "gems"] },
-      { name: "Plains", x: 10, y: 170, width: 250, height: 120, color: "#FFC107", resources: ["wheat", "cattle"] },
-      { name: "Coastal", x: 270, y: 220, width: 220, height: 140, color: "#03A9F4", resources: ["fish", "salt"] }
-    ];
-    
-    const resourceIcons = {
-      wood: "🌳", fruits: "🍎", ore: "⛏️", gems: "💎",
-      wheat: "🌾", cattle: "🐄", fish: "🐟", salt: "🧂"
-    };
-    
-    function createRegions() {
-      mapContainer.selectAll(".region")
-        .data(regions)
-        .enter()
-        .append("div")
-        .attr("class", "region")
-        .style("left", d => `${d.x}px`)
-        .style("top", d => `${d.y}px`)
-        .style("width", d => `${d.width}px`)
-        .style("height", d => `${d.height}px`)
-        .style("background-color", d => d.color)
-        .on("click", showRegionInfo)
-        .each(function(d) {
-          const region = d3.select(this);
-          d.resources.forEach((resource, i) => {
-            region.append("div")
-              .attr("class", "resource-icon")
-              .style("left", `${10 + i * 40}px`)
-              .style("top", "10px")
-              .text(resourceIcons[resource]);
-          });
-        });
-    }
-    
-    function showRegionInfo(event, d) {
-      infoPanel.html(`
-        <h3>${d.name}</h3>
-        <p>Resources: ${d.resources.join(", ")}</p>
-        <button onclick="harvestResource('${d.name}')">Harvest Resources</button>
-      `);
-    }
-    
-    function harvestResource(regionName) {
-      const region = regions.find(r => r.name === regionName);
-      const harvestedResource = region.resources[Math.floor(Math.random() * region.resources.length)];
-      alert(`You've harvested ${harvestedResource} from ${regionName}!`);
-    }
-    
-    createRegions();
-    </script>
-    </body></html>
-
-    <html><head><base href="https://bensgame.com/">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Ben's Base Building Game</title>
-        <style>
-          body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: Arial, sans-serif;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-          }
-          #game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-          }
-          #game-board {
-            display: grid;
-            grid-template-columns: repeat(5, 100px);
-            grid-gap: 10px;
-            margin-bottom: 20px;
-          }
-          .cell {
-            width: 100px;
-            height: 100px;
-            background-color: #34495e;
-            border: 2px solid #2c3e50;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-          }
-          .cell:hover {
-            background-color: #3498db;
-          }
-          .player1 { color: #e74c3c; }
-          .player2 { color: #2ecc71; }
-          #status {
-            font-size: 24px;
-            margin-bottom: 20px;
-          }
-          button {
-            font-size: 18px;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: #ecf0f1;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-          }
-          button:hover {
-            background-color: #2980b9;
-          }
-        </style>
-        </head>
-        <body>
-          <div id="game-container">
-            <h1>Ben's Base Building Game</h1>
-            <div id="status">Player 1's turn</div>
-            <div id="game-board"></div>
-            <button id="reset-btn">Reset Game</button>
-          </div>
-        
-          <script>
-            const gameBoard = document.getElementById('game-board');
-            const status = document.getElementById('status');
-            const resetBtn = document.getElementById('reset-btn');
-            let currentPlayer = 1;
-            let gameState = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
-        
-            function createBoard() {
-              gameBoard.innerHTML = '';
-              for (let i = 0; i < 25; i++) {
-                const cell = document.createElement('div');
-                cell.classList.add('cell');
-                cell.dataset.index = i;
-                cell.addEventListener('click', handleCellClick);
-                gameBoard.appendChild(cell);
-              }
-            }
-        
-            function handleCellClick(e) {
-              const index = e.target.dataset.index;
-              if (gameState[index] === '') {
-                gameState[index] = currentPlayer;
-                e.target.textContent = currentPlayer === 1 ? '🏠' : '🏢';
-                e.target.classList.add(currentPlayer === 1 ? 'player1' : 'player2');
-                currentPlayer = currentPlayer === 1 ? 2 : 1;
-                status.textContent = `Player ${currentPlayer}'s turn`;
-                checkWinner();
-              }
-            }
-        
-            function checkWinner() {
-              const winPatterns = [
-                [0, 1, 2], [1, 2, 3], [2, 3, 4],
-                [5, 6, 7], [6, 7, 8], [7, 8, 9],
-                [10, 11, 12], [11, 12, 13], [12, 13, 14],
-                [15, 16, 17], [16, 17, 18], [17, 18, 19],
-                [20, 21, 22], [21, 22, 23], [22, 23, 24],
-                [0, 5, 10], [5, 10, 15], [10, 15, 20],
-                [1, 6, 11], [6, 11, 16], [11, 16, 21],
-                [2, 7, 12], [7, 12, 17], [12, 17, 22],
-                [3, 8, 13], [8, 13, 18], [13, 18, 23],
-                [4, 9, 14], [9, 14, 19], [14, 19, 24],
-                [0, 6, 12], [1, 7, 13], [2, 8, 14],
-                [10, 6, 2], [11, 7, 3], [12, 8, 4],
-                [5, 11, 17], [6, 12, 18], [7, 13, 19],
-                [15, 11, 7], [16, 12, 8], [17, 13, 9],
-                [20, 16, 12], [21, 17, 13], [22, 18, 14]
-              ];
-        
-              for (const pattern of winPatterns) {
-                const [a, b, c] = pattern;
-                if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
-                  status.textContent = `Player ${gameState[a]} wins!`;
-                  disableBoard();
-                  return;
-                }
-              }
-        
-              if (!gameState.includes('')) {
-                status.textContent = "It's a draw!";
-                disableBoard();
-              }
-            }
-        
-            function disableBoard() {
-              const cells = document.querySelectorAll('.cell');
-              cells.forEach(cell => cell.removeEventListener('click', handleCellClick));
-            }
-        
-            function resetGame() {
-              currentPlayer = 1;
-              gameState = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
-              status.textContent = "Player 1's turn";
-              createBoard();
-            }
-        
-            resetBtn.addEventListener('click', resetGame);
-            createBoard();
-          </script>
-        </body></html>
