@@ -13,46 +13,49 @@ body, html {
     height: 100vh;
 }
 .sidebar {
-    width: 250px;
+    width: 200px; /* Reduced from 250px */
     background: rgba(0,0,0,0.5);
-    padding: 20px;
+    padding: 10px; /* Reduced from 20px */
     overflow-y: auto;
 }
 .main-area {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    padding: 10px; /* Reduced from 20px */
+    overflow-y: auto;
 }
-h1, h2 {
-    margin-top: 0;
-    color: #f39c12;
+h1 {
+    font-size: 1.5em; /* Reduced from default */
 }
-.resource, .unit {
-    margin-bottom: 10px;
-    padding: 10px;
+h2 {
+    font-size: 1.2em; /* Reduced from default */
+    margin-top: 10px; /* Added to reduce vertical space */
+}
+.resource, .unit, .defense-value, .strength-value {
+    margin-bottom: 5px; /* Reduced from 10px */
+    padding: 5px; /* Reduced from 10px */
     background: rgba(255,255,255,0.1);
     border-radius: 5px;
 }
-.building, .recruit-btn, #boss-button {
+.building, .recruit-btn, #boss-button, .research-btn {
     display: inline-block;
-    width: 100px;
-    height: 100px;
-    margin: 10px;
+    width: 80px; /* Reduced from 100px */
+    height: 80px; /* Reduced from 100px */
+    margin: 5px; /* Reduced from 10px */
     background: rgba(255,255,255,0.2);
     border-radius: 10px;
     text-align: center;
     cursor: pointer;
     transition: transform 0.3s ease;
 }
-.building:hover, .recruit-btn:hover, #boss-button:hover {
+.building:hover, .recruit-btn:hover, #boss-button:hover, .research-btn:hover {
     transform: scale(1.05);
 }
 .building img, .recruit-btn img {
-    width: 60px;
-    height: 60px;
-    margin-top: 10px;
+    width: 50px; /* Reduced from 60px */
+    height: 50px; /* Reduced from 60px */
+    margin-top: 5px; /* Reduced from 10px */
 }
 .cost {
     position: absolute;
@@ -61,7 +64,7 @@ h1, h2 {
     right: 5px;
     background: rgba(0,0,0,0.7);
     color: white;
-    font-size: 0.8em;
+    font-size: 0.7em; /* Reduced from 0.8em */
     padding: 2px;
     border-radius: 3px;
 }
@@ -91,15 +94,15 @@ h1, h2 {
     background: linear-gradient(45deg, #c0392b, #e74c3c);
     color: white;
     font-weight: bold;
-    font-size: 1.2em;
-    width: 200px;
-    height: 60px;
-    line-height: 60px;
+    font-size: 1em; /* Reduced from 1.2em */
+    width: 150px; /* Reduced from 200px */
+    height: 50px; /* Reduced from 60px */
+    line-height: 50px; /* Adjusted to match new height */
     margin-top: 20px;
 }
 #boss-health-bar {
     width: 100%;
-    height: 20px;
+    height: 15px; /* Reduced from 20px */
     background-color: #e74c3c;
     margin-top: 10px;
     position: relative;
@@ -114,7 +117,7 @@ h1, h2 {
     position: absolute;
     width: 100%;
     text-align: center;
-    line-height: 20px;
+    line-height: 15px; /* Adjusted to match new height */
     color: white;
     font-weight: bold;
 }
@@ -125,12 +128,6 @@ h1, h2 {
 }
 .building, .recruit-btn {
     position: relative;
-}
-.defense-value, .strength-value {
-    margin-bottom: 10px;
-    padding: 10px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 5px;
 }
 #defense-page {
     display: none;
@@ -174,13 +171,83 @@ h1, h2 {
     background-color: #27ae60;
 }
 #boss-stats {
-    margin-bottom: 20px;
-    padding: 10px;
+    margin-bottom: 10px; /* Reduced from 20px */
+    padding: 5px; /* Reduced from 10px */
     background: rgba(255,255,255,0.1);
     border-radius: 5px;
 }
 #boss-stats div {
     margin-bottom: 5px;
+}
+#hero-stats, #neutral-armies {
+    margin-bottom: 10px; /* Reduced from 20px */
+    padding: 5px; /* Reduced from 10px */
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+}
+.hero-stat, .neutral-army {
+    margin-bottom: 5px;
+}
+.battle-btn {
+    padding: 5px 10px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.battle-btn:hover {
+    background: #2980b9;
+}
+.research-btn {
+    display: inline-block;
+    width: 150px; /* Reduced from 200px */
+    height: 50px; /* Reduced from 60px */
+    margin: 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.research-btn:hover {
+    transform: scale(1.05);
+}
+#specialization-choice {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.8);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+    color: white;
+    text-align: center;
+}
+#specialization-choice button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#specialization-choice button:hover {
+    background-color: #2980b9;
+}
+.left-column, .right-column {
+    flex: 1;
+    min-width: 300px;
+    padding: 0 5px;
+}
+#buildings, #recruitment, #research-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 }
 </style>
 </head>
@@ -203,28 +270,40 @@ h1, h2 {
         <div id="boss-attack-timer">Next attack in: 02:00</div>
     </div>
     <div class="main-area">
-        <h2>Buildings</h2>
-        <div id="buildings">
-            <!-- Buildings will be dynamically added here -->
+        <div class="left-column">
+            <h2>Buildings</h2>
+            <div id="buildings">
+                <!-- Buildings will be dynamically added here -->
+            </div>
+            <h2>Recruitment</h2>
+            <div id="recruitment">
+                <!-- Recruitment buttons will be dynamically added here -->
+            </div>
+            <h2>Research</h2>
+            <div id="research-options" style="display: none;">
+                <!-- Research options will be dynamically added here -->
+            </div>
         </div>
-        <h2>Recruitment</h2>
-        <div id="recruitment">
-            <!-- Recruitment buttons will be dynamically added here -->
-        </div>
-        <h2>Empire Defense and Strength</h2>
-        <div id="empire-defense"></div>
-        <div id="empire-strength"></div>
-        <h2>Boss Stats</h2>
-        <div id="boss-stats">
-            <div id="boss-health-stat"></div>
-            <div id="boss-strength-stat"></div>
-        </div>
-        <h2>Boss Battle</h2>
-        <div id="boss-battle">
-            <div id="boss-button">Fight the Boss!</div>
-            <div id="boss-health-bar">
-                <div id="boss-health"></div>
-                <div id="boss-health-text">100%</div>
+        <div class="right-column">
+            <h2>Empire Defense and Strength</h2>
+            <div id="empire-defense"></div>
+            <div id="empire-strength"></div>
+            <h2>Boss Stats</h2>
+            <div id="boss-stats">
+                <div id="boss-health-stat"></div>
+                <div id="boss-strength-stat"></div>
+            </div>
+            <h2>Empire Hero</h2>
+            <div id="hero-stats"></div>
+            <h2>Neutral Armies</h2>
+            <div id="neutral-armies"></div>
+            <h2>Boss Battle</h2>
+            <div id="boss-battle">
+                <div id="boss-button">Fight the Boss!</div>
+                <div id="boss-health-bar">
+                    <div id="boss-health"></div>
+                    <div id="boss-health-text">100%</div>
+                </div>
             </div>
         </div>
     </div>
@@ -250,21 +329,28 @@ const resources = {
 };
 
 const buildings = {
-    mine: { name: "Gold Mine", cost: { gold: 20, wood: 10 }, produces: { gold: 100 } },
-    lumbermill: { name: "Lumber Mill", cost: { gold: 15, wood: 50 }, produces: { wood: 200 } },
-    quarry: { name: "Stone Quarry", cost: { gold: 25, wood: 15 }, produces: { stone: 100 } },
-    farm: { name: "Farm", cost: { gold: 10, wood: 10 }, produces: { food: 300 } },
-    ironmine: { name: "Iron Mine", cost: { gold: 300, wood: 200 }, produces: { iron: 100 } },
-    university: { name: "University", cost: { gold: 200, wood: 200, stone: 100 }, produces: {} },
-    wall: { name: "Wall", cost: { stone: 50, wood: 20 }, defense: 10 }
+    mine: { name: "Gold Mine", cost: { iron: 100 }, produces: { gold: 10 } },
+    lumbermill: { name: "Lumber Mill", cost: { gold: 100 }, produces: { wood: 10 } },
+    quarry: { name: "Stone Quarry", cost: { wood: 150 }, produces: { stone: 10 } },
+    farm: { name: "Farm", cost: { wood: 100 }, produces: { food: 10 } },
+    ironmine: { name: "Iron Mine", cost: { stone: 300, wood: 200 }, produces: { iron: 10 } },
+    university: { name: "University", cost: { gold: 500, wood: 300, stone: 200 }, produces: {} },
+    wall: { name: "Wall", cost: { stone: 500, wood: 200 }, defense: 100 }
 };
 
+const research = {
+    unitUpgrade: { name: "Unit Upgrade", cost: { gold: 1000 }, effect: { strength: 1, defense: 1 }, level: 0, maxLevel: 10 },
+    populationGrowth: { name: "Population Growth", cost: { gold: 1500 }, effect: { growth: 10 }, level: 0, maxLevel: 10 }
+};
+
+let hasUniversity = false;
+let populationGrowthRate = 1; // 1 population per second
 let wallDefense = 0;
 
 const units = {
     soldier: { name: "Soldier", cost: { gold: 50, food: 20 }, strength: 5, defense: 3, upgradeBonus: { strength: 1, defense: 1 } },
-    archer: { name: "Archer", cost: { food: 70, wood: 30 }, strength: 7, defense: 2, upgradeBonus: { strength: 2, defense: 0.5 } },
-    knight: { name: "Knight", cost: { food: 100, iron: 50 }, strength: 10, defense: 8, upgradeBonus: { strength: 2, defense: 2 } },
+    archer: { name: "Archer", cost: { gold: 70, wood: 30 }, strength: 7, defense: 2, upgradeBonus: { strength: 2, defense: 0.5 } },
+    knight: { name: "Knight", cost: { gold: 100, iron: 50 }, strength: 10, defense: 8, upgradeBonus: { strength: 2, defense: 2 } },
     siege: { name: "Siege Engine", cost: { gold: 200, wood: 100, iron: 50 }, strength: 15, defense: 5, upgradeBonus: { strength: 3, defense: 1 } }
 };
 
@@ -275,12 +361,36 @@ const army = {
     siege: 0
 };
 
-let population = 10000; // Starting population
-let bossHealth = 10000;
+let population = 1000; // Starting population
+let bossHealth = 1000;
 const bossMaxHealth = 10000;
 let gameTime = 0;
 let lastBossAttackTime = 0;
 let bossAttackTimer = 120; // 2 minutes in seconds
+
+const hero = {
+    name: "Empire Hero",
+    strength: 10,
+    experience: 0,
+    level: 1,
+    specializations: {
+        gatherer: 0,
+        healer: 0,
+        fighter: 0
+    }
+};
+
+const neutralArmies = [
+    { name: "Bandit Camp", strength: 50, rewards: { gold: 100, experience: 20 } },
+    { name: "Rogue Knights", strength: 100, rewards: { gold: 200, iron: 50, experience: 40 } },
+    { name: "Ancient Ruins Guardians", strength: 200, rewards: { gold: 300, stone: 100, experience: 80 } }
+];
+
+function calculateTotalDefense() {
+    return wallDefense + Object.keys(army).reduce((sum, unit) => {
+        return sum + army[unit] * units[unit].defense;
+    }, 0);
+}
 
 function updateResources() {
     const resourcesContainer = document.getElementById('resources');
@@ -299,7 +409,12 @@ function updateResources() {
 
 function updatePopulation() {
     const populationElement = document.getElementById('population');
-    populationElement.innerHTML = `<div class="resource"><strong>Population:</strong> ${population}</div>`;
+    populationElement.innerHTML = `
+        <div class="resource">
+            <strong>Population:</strong> ${Math.floor(population)}
+            <small>(+${populationGrowthRate}/s)</small>
+        </div>
+    `;
 }
 
 function updateArmy() {
@@ -324,7 +439,7 @@ function createBuildings() {
         const buildingElement = document.createElement('div');
         buildingElement.className = 'building';
         buildingElement.innerHTML = `
-            <img alt="${building.name} icon" src="${key}.svg" width="60" height="60">
+            <img alt="${building.name} icon" src="${key}.svg" width="50" height="50">
             <div>${building.name}</div>
             <div class="cost">${formatCost(building.cost)}</div>
         `;
@@ -340,12 +455,73 @@ function createRecruitmentButtons() {
         const buttonElement = document.createElement('div');
         buttonElement.className = 'recruit-btn';
         buttonElement.innerHTML = `
-            <img alt="${unit.name} icon" src="${key}.svg" width="60" height="60">
+            <img alt="${unit.name} icon" src="${key}.svg" width="50" height="50">
             <div>${unit.name}</div>
             <div class="cost">${formatCost(unit.cost)}</div>
         `;
         buttonElement.onclick = () => recruitUnit(key);
         recruitmentContainer.appendChild(buttonElement);
+    });
+}
+
+function createResearchOptions() {
+    const researchContainer = document.getElementById('research-options');
+    researchContainer.innerHTML = '';
+    Object.keys(research).forEach(key => {
+        const option = research[key];
+        const buttonElement = document.createElement('div');
+        buttonElement.className = 'research-btn';
+        buttonElement.innerHTML = `
+            <div>${option.name} (Level ${option.level}/${option.maxLevel})</div>
+            <div class="cost">${formatCost(option.cost)}</div>
+        `;
+        buttonElement.onclick = () => performResearch(key);
+        researchContainer.appendChild(buttonElement);
+    });
+}
+
+function performResearch(researchKey) {
+    const option = research[researchKey];
+    if (option.level < option.maxLevel && canAfford(option.cost)) {
+        Object.keys(option.cost).forEach(resource => {
+            resources[resource].amount -= option.cost[resource];
+        });
+        option.level++;
+        applyResearchEffects(researchKey);
+        updateResources();
+        createResearchOptions();
+        notify(`${option.name} researched to level ${option.level}!`);
+    } else if (option.level >= option.maxLevel) {
+        notify("Research already at maximum level!", "error");
+    } else {
+        notify("Not enough resources for research!", "error");
+    }
+}
+
+function applyResearchEffects(researchKey) {
+    const option = research[researchKey];
+    if (researchKey === 'unitUpgrade') {
+        Object.keys(units).forEach(unit => {
+            units[unit].strength += option.effect.strength;
+            units[unit].defense += option.effect.defense;
+        });
+        updateArmy();
+    } else if (researchKey === 'populationGrowth') {
+        populationGrowthRate += option.level * option.effect.growth;
+    }
+}
+
+function createNeutralArmyButtons() {
+    const neutralArmiesContainer = document.getElementById('neutral-armies');
+    neutralArmiesContainer.innerHTML = '';
+    neutralArmies.forEach((army, index) => {
+        const armyElement = document.createElement('div');
+        armyElement.className = 'neutral-army';
+        armyElement.innerHTML = `
+            <strong>${army.name}</strong> (Strength: ${army.strength})
+            <button class="battle-btn" onclick="battleNeutralArmy(${index})">Battle</button>
+        `;
+        neutralArmiesContainer.appendChild(armyElement);
     });
 }
 
@@ -357,13 +533,17 @@ function buyBuilding(buildingKey) {
         });
         if (buildingKey === 'wall') {
             wallDefense += building.defense;
+            updateWallDefense();
+        } else if (buildingKey === 'university') {
+            hasUniversity = true;
+            document.getElementById('research-options').style.display = 'block';
+            createResearchOptions();
         } else {
             Object.keys(building.produces).forEach(resource => {
                 resources[resource].perSecond += building.produces[resource];
             });
         }
         updateResources();
-        updateWallDefense();
         notify(`${building.name} purchased!`);
     } else {
         notify("Not enough resources!", "error");
@@ -374,9 +554,11 @@ function updateWallDefense() {
     const empireDefenseElement = document.getElementById('empire-defense');
     empireDefenseElement.innerHTML = `
         <div class="defense-value">
-            <strong>Wall Defense:</strong> ${wallDefense}
+            <strong>Wall Strength:</strong> ${wallDefense}
         </div>
-        ${empireDefenseElement.innerHTML}
+        <div class="defense-value">
+            <strong>Total Empire Defense:</strong> ${calculateTotalDefense()}
+        </div>
     `;
 }
 
@@ -393,6 +575,112 @@ function recruitUnit(unitKey) {
     } else {
         notify("Not enough resources to recruit!", "error");
     }
+}
+
+function battleNeutralArmy(armyIndex) {
+    const neutralArmy = neutralArmies[armyIndex];
+    const totalStrength = hero.strength + calculateTotalArmyStrength();
+    const totalDefense = calculateTotalDefense();
+    
+    const populationLoss = Math.floor(neutralArmy.strength / (totalDefense + 1)); // Add 1 to avoid division by zero
+    
+    if (totalStrength > neutralArmy.strength) {
+        // Victory
+        Object.keys(neutralArmy.rewards).forEach(reward => {
+            if (reward === 'experience') {
+                hero.experience += neutralArmy.rewards[reward];
+                checkHeroLevelUp();
+            } else {
+                resources[reward].amount += neutralArmy.rewards[reward];
+            }
+        });
+        population = Math.max(0, population - populationLoss);
+        notify(`Victory against ${neutralArmy.name}! Gained rewards and experience. Lost ${populationLoss} population.`, "success");
+    } else {
+        // Defeat
+        const defeatPopulationLoss = populationLoss * 2; // More population loss on defeat
+        population = Math.max(0, population - defeatPopulationLoss);
+        notify(`Defeated by ${neutralArmy.name}. Lost ${defeatPopulationLoss} population.`, "error");
+    }
+    
+    updateHeroStats();
+    updateResources();
+    updatePopulation();
+    
+    if (population <= 0) {
+        gameOver();
+    }
+}
+
+function gameOver() {
+    notify("Game Over! Your population has reached zero.", "error");
+}
+
+function calculateTotalArmyStrength() {
+    return Object.keys(army).reduce((sum, unit) => {
+        return sum + army[unit] * units[unit].strength;
+    }, 0);
+}
+
+function checkHeroLevelUp() {
+    const experienceNeeded = hero.level * 100;
+    if (hero.experience >= experienceNeeded) {
+        hero.experience -= experienceNeeded;
+        heroLevelUp();
+    }
+}
+
+function heroLevelUp() {
+    hero.level++;
+    hero.strength += 5;
+    showSpecializationChoice();
+}
+
+function showSpecializationChoice() {
+    const specializationChoiceHTML = `
+        <div id="specialization-choice">
+            <h2>Choose a Specialization</h2>
+            <button onclick="chooseSpecialization('gatherer')">Gatherer (More Stone Production)</button>
+            <button onclick="chooseSpecialization('healer')">Healer (More Population)</button>
+            <button onclick="chooseSpecialization('fighter')">Fighter (More Strength)</button>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', specializationChoiceHTML);
+}
+
+function chooseSpecialization(specialization) {
+    hero.specializations[specialization]++;
+    applySpecializationEffects(specialization);
+    document.getElementById('specialization-choice').remove();
+    updateHeroStats();
+    notify(`Hero specialized in ${specialization}!`, "success");
+}
+
+function applySpecializationEffects(specialization) {
+    switch (specialization) {
+        case 'gatherer':
+            resources.stone.perSecond += 1;
+            break;
+        case 'healer':
+            populationGrowthRate += 5;
+            break;
+        case 'fighter':
+            hero.strength += 3;
+            break;
+    }
+}
+
+function updateHeroStats() {
+    const heroStatsElement = document.getElementById('hero-stats');
+    heroStatsElement.innerHTML = `
+        <div class="hero-stat"><strong>Hero Level:</strong> ${hero.level}</div>
+        <div class="hero-stat"><strong>Hero Strength:</strong> ${hero.strength}</div>
+        <div class="hero-stat"><strong>Hero Experience:</strong> ${hero.experience}/${hero.level * 100}</div>
+        <div class="hero-stat"><strong>Specializations:</strong></div>
+        <div class="hero-stat">Gatherer: ${hero.specializations.gatherer}</div>
+        <div class="hero-stat">Healer: ${hero.specializations.healer}</div>
+        <div class="hero-stat">Fighter: ${hero.specializations.fighter}</div>
+    `;
 }
 
 function canAfford(cost) {
@@ -432,7 +720,7 @@ function fightBoss() {
     updateBossStats();
 
     if (bossHealth > 0) {
-        notify(`You dealt ${damage} damage to the boss! Take that bad boy down`);
+        notify(`You dealt ${damage} damage to the boss!`);
     } else {
         notify("Congratulations! You've defeated the boss and won the game!", "success");
         document.getElementById('boss-button').style.display = 'none';
@@ -503,20 +791,13 @@ function updateBossStats() {
 }
 
 function updateEmpireDefenseAndStrength() {
-    const totalDefense = wallDefense + Object.keys(army).reduce((sum, unit) => {
-        return sum + army[unit] * units[unit].defense;
-    }, 0);
+    const totalDefense = calculateTotalDefense();
 
     const totalStrength = Object.keys(army).reduce((sum, unit) => {
         return sum + army[unit] * units[unit].strength;
     }, 0);
 
-    const empireDefenseElement = document.getElementById('empire-defense');
-    empireDefenseElement.innerHTML = `
-        <div class="defense-value">
-            <strong>Total Empire Defense:</strong> ${totalDefense.toFixed(1)}
-        </div>
-    `;
+    updateWallDefense();
 
     const empireStrengthElement = document.getElementById('empire-strength');
     empireStrengthElement.innerHTML = `
@@ -538,6 +819,20 @@ function startResetGame() {
     gameTime = 0;
     lastBossAttackTime = 0;
     bossAttackTimer = 120;
+    hero.strength = 10;
+    hero.experience = 0;
+    hero.level = 1;
+    hero.specializations = {
+        gatherer: 0,
+        healer: 0,
+        fighter: 0
+    };
+    hasUniversity = false;
+    populationGrowthRate = 1; // Reset to 1 population per second
+    Object.keys(research).forEach(key => {
+        research[key].level = 0;
+    });
+    document.getElementById('research-options').style.display = 'none';
 
     updateResources();
     updateArmy();
@@ -546,6 +841,8 @@ function startResetGame() {
     updatePopulation();
     updateWallDefense();
     updateBossStats();
+    updateHeroStats();
+    createNeutralArmyButtons();
     notify("Game started/reset!", "success");
     document.getElementById('boss-button').style.display = 'block';
 }
@@ -559,28 +856,36 @@ function updateBossAttackTimer() {
 document.getElementById('start-reset-game').addEventListener('click', startResetGame);
 createBuildings();
 createRecruitmentButtons();
+createNeutralArmyButtons();
+createResearchOptions();
 updateResources();
 updateArmy();
 updateBossHealth();
 updateEmpireDefenseAndStrength();
 updatePopulation();
 updateBossStats();
+updateHeroStats();
 setInterval(() => {
     Object.keys(resources).forEach(key => {
         resources[key].amount += resources[key].perSecond / 10;  
     });
     updateResources();
-    updatePopulation();
+    population += populationGrowthRate / 10; // Add population growth
+    updatePopulation(); // Update population display
     gameTime++;
     updateTimer();
     updateEmpireDefenseAndStrength();
     bossAttackTimer--;
     updateBossAttackTimer();
+    updateHeroStats();
     if (bossAttackTimer <= 0) {
         fightBoss();
         bossAttackTimer = 120; // Reset timer after attack
     }
-}, 1000);
+    if (hasUniversity && populationGrowthRate > 0) {
+        population += populationGrowthRate / 10; // This line can be removed as it's redundant now
+    }
+}, 100); // Changed to run every 0.1 seconds for smoother updates
 document.getElementById('boss-button').addEventListener('click', fightBoss);
 </script>
 </body></html>
