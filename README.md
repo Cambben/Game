@@ -254,13 +254,13 @@ h2 {
 <body>
 <div class="game-container">
     <div class="sidebar">
-        <h1>Resource Empire</h1>
+        <h1>bon annif Arnaud!! Resource Empire</h1>
         <button id="start-reset-game">Start/Reset Game</button>
         <div id="timer">Time: 00:00:00</div>
         <div id="resources">
             <!-- Resources will be dynamically added here -->
         </div>
-        <h2>Population</h2>
+        <h2>Population of Arnaudistan</h2>
         <div id="population"></div>
         <h2>Army</h2>
         <div id="army">
@@ -297,7 +297,7 @@ h2 {
             <div id="hero-stats"></div>
             <h2>Neutral Armies</h2>
             <div id="neutral-armies"></div>
-            <h2>Boss Battle</h2>
+            <h2>Boss Battle, arnaud's worst nightmare</h2>
             <div id="boss-battle">
                 <div id="boss-button">Fight the Boss!</div>
                 <div id="boss-health-bar">
@@ -329,18 +329,18 @@ const resources = {
 };
 
 const buildings = {
-    mine: { name: "Gold Mine", cost: { iron: 100 }, produces: { gold: 10 } },
-    lumbermill: { name: "Lumber Mill", cost: { gold: 100 }, produces: { wood: 10 } },
-    quarry: { name: "Stone Quarry", cost: { wood: 150 }, produces: { stone: 10 } },
-    farm: { name: "Farm", cost: { wood: 100 }, produces: { food: 10 } },
-    ironmine: { name: "Iron Mine", cost: { stone: 300, wood: 200 }, produces: { iron: 10 } },
+    mine: { name: "Gold Mine", cost: { wood: 100 }, produces: { gold: 10} },
+    lumbermill: { name: "Lumber Mill", cost: { stone: 100 }, produces: { wood: 10 } },
+    quarry: { name: "Stone Quarry", cost: { gold: 100 }, produces: { stone: 10} },
+    farm: { name: "Farm", cost: { wood: 100}, produces: { food: 10 } },
+    ironmine: { name: "Iron Mine", cost: { stone: 100, wood: 100 }, produces: { iron: 5 } },
     university: { name: "University", cost: { gold: 500, wood: 300, stone: 200 }, produces: {} },
-    wall: { name: "Wall", cost: { stone: 500, wood: 200 }, defense: 100 }
+    wall: { name: "Wall", cost: { stone: 300, wood: 200 }, defense: 100 }
 };
 
 const research = {
-    unitUpgrade: { name: "Unit Upgrade", cost: { gold: 1000 }, effect: { strength: 1, defense: 1 }, level: 0, maxLevel: 10 },
-    populationGrowth: { name: "Population Growth", cost: { gold: 1500 }, effect: { growth: 10 }, level: 0, maxLevel: 10 }
+    unitUpgrade: { name: "Unit Upgrade", cost: { stone: 800, iron:200 }, effect: { strength: 1, defense: 1 }, level: 0, maxLevel: 5 },
+    populationGrowth: { name: "Population Growth", cost: { food: 1000 }, effect: { growth: 5 }, level: 0, maxLevel: 5 }
 };
 
 let hasUniversity = false;
@@ -348,10 +348,10 @@ let populationGrowthRate = 1; // 1 population per second
 let wallDefense = 0;
 
 const units = {
-    soldier: { name: "Soldier", cost: { gold: 50, food: 20 }, strength: 5, defense: 3, upgradeBonus: { strength: 1, defense: 1 } },
-    archer: { name: "Archer", cost: { gold: 70, wood: 30 }, strength: 7, defense: 2, upgradeBonus: { strength: 2, defense: 0.5 } },
-    knight: { name: "Knight", cost: { gold: 100, iron: 50 }, strength: 10, defense: 8, upgradeBonus: { strength: 2, defense: 2 } },
-    siege: { name: "Siege Engine", cost: { gold: 200, wood: 100, iron: 50 }, strength: 15, defense: 5, upgradeBonus: { strength: 3, defense: 1 } }
+    soldier: { name: "Soldier", cost: { gold: 50, food: 50 }, strength: 4, defense: 8, upgradeBonus: { strength: 1, defense: 1 } },
+    archer: { name: "Archer", cost: { gold: 70, food: 70 }, strength: 7, defense: 1, upgradeBonus: { strength: 2, defense: 0.5 } },
+    knight: { name: "Unkillable Knight", cost: { gold: 100, iron: 50 }, strength: 10, defense: 8, upgradeBonus: { strength: 2, defense: 2 } },
+    siege: { name: "Big bro's Siege Engine", cost: { gold: 200, wood: 100, iron: 50 }, strength: 15, defense: 5, upgradeBonus: { strength: 3, defense: 1 } }
 };
 
 const army = {
@@ -362,14 +362,14 @@ const army = {
 };
 
 let population = 1000; // Starting population
-let bossHealth = 1000;
+let bossHealth = 10000;
 const bossMaxHealth = 10000;
 let gameTime = 0;
 let lastBossAttackTime = 0;
 let bossAttackTimer = 120; // 2 minutes in seconds
 
 const hero = {
-    name: "Empire Hero",
+    name: "Big Bro's Empire Hero",
     strength: 10,
     experience: 0,
     level: 1,
@@ -659,13 +659,13 @@ function chooseSpecialization(specialization) {
 function applySpecializationEffects(specialization) {
     switch (specialization) {
         case 'gatherer':
-            resources.stone.perSecond += 1;
+            resources.iron.perSecond += 3;
             break;
         case 'healer':
-            populationGrowthRate += 5;
+            populationGrowthRate += 3;
             break;
         case 'fighter':
-            hero.strength += 3;
+            hero.strength += 5;
             break;
     }
 }
@@ -767,7 +767,7 @@ function fightBoss() {
         }
     }
 
-    notify(`The boss attacked!`, "error");
+    notify(`The boss attacked Big Bro!`, "error");
     updateArmy();
 }
 
@@ -814,7 +814,7 @@ function startResetGame() {
     Object.keys(army).forEach(key => {
         army[key] = 0;
     });
-    population = 10000;
+    population = 1000;
     bossHealth = bossMaxHealth;
     gameTime = 0;
     lastBossAttackTime = 0;
@@ -867,10 +867,10 @@ updateBossStats();
 updateHeroStats();
 setInterval(() => {
     Object.keys(resources).forEach(key => {
-        resources[key].amount += resources[key].perSecond / 10;  
+        resources[key].amount += resources[key].perSecond;  
     });
     updateResources();
-    population += populationGrowthRate / 10; // Add population growth
+    population += populationGrowthRate; // Remove division by 10
     updatePopulation(); // Update population display
     gameTime++;
     updateTimer();
@@ -883,9 +883,9 @@ setInterval(() => {
         bossAttackTimer = 120; // Reset timer after attack
     }
     if (hasUniversity && populationGrowthRate > 0) {
-        population += populationGrowthRate / 10; // This line can be removed as it's redundant now
+        population += populationGrowthRate; // Remove division by 10
     }
-}, 100); // Changed to run every 0.1 seconds for smoother updates
+}, 1000); // Changed to run every 1 second for a slower timer
 document.getElementById('boss-button').addEventListener('click', fightBoss);
 </script>
 </body></html>
