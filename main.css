@@ -534,18 +534,18 @@ h2 {
 </div>
 <script>
 const resources = {
-    gold: { name: "Gold", amount: 200, perSecond: 5, initialAmount: 200 },
-    wood: { name: "Wood", amount: 1000, perSecond: 2, initialAmount: 1000 },
-    food: { name: "Food", amount: 200, perSecond: 2, initialAmount: 200 },
+    gold: { name: "Gold", amount: 500, perSecond: 2, initialAmount: 500 },
+    wood: { name: "Wood", amount: 800, perSecond: 1, initialAmount: 800 },
+    food: { name: "Food", amount: 200, perSecond: 1, initialAmount: 200 },
     iron: { name: "Iron", amount: 100, perSecond: 0, initialAmount: 100 }
 };
 
 const buildings = {
-    mine: { name: "Gold Mine", cost: { wood: 100 }, produces: { gold: 5} },
-    lumbermill: { name: "Lumber Mill", cost: { wood: 100 }, produces: { wood: 2 } },
-    farm: { name: "Farm", cost: { wood: 100}, produces: { food: 5 } },
+    mine: { name: "Gold Mine", cost: { wood: 100 }, produces: { gold: 2} },
+    lumbermill: { name: "Lumber Mill", cost: { wood: 50 }, produces: { wood: 2 } },
+    farm: { name: "Farm", cost: { wood: 100}, produces: { food: 2 } },
     ironmine: { name: "Iron Mine", cost: { gold: 100, wood: 100 }, produces: { iron: 1 } },
-    university: { name: "University", cost: { gold: 500, wood: 300, iron: 50 }, produces: {} }
+    university: { name: "University", cost: { gold: 500, wood: 200, iron: 50 }, produces: {} }
 };
 
 const buildingCounts = {
@@ -557,11 +557,11 @@ const buildingCounts = {
 };
 
 const research = {
-    unitUpgrade: { name: "Unit Upgrade", cost: { gold: 1000 }, effect: { strength: 1, defense: 1 }, level: 0, maxLevel: 5 },
-    populationGrowth: { name: "Population Growth", cost: { food: 1000 }, effect: { growth: 2 }, level: 0, maxLevel: 5 },
+    unitUpgrade: { name: "Unit Upgrade", cost: { iron: 400 }, effect: { strength: 1, defense: 1 }, level: 0, maxLevel: 5 },
+    populationGrowth: { name: "Population Growth", cost: { food: 1000 }, effect: { growth: 1 }, level: 0, maxLevel: 5 },
     ironMineUnlock: { name: "Iron Mining Technology", cost: { gold: 500, wood: 500 }, effect: { unlockIronMine: true }, level: 0, maxLevel: 1 },
     ballistaUnlock: { name: "Ballista Unlock", cost: { gold: 500, iron: 200 }, effect: { unlockBallista: true }, level: 0, maxLevel: 1 },
-    musicAcademy: { name: "Music Academy", cost: { gold: 500, wood: 500 }, effect: { unlockTroubadour: true }, level: 0, maxLevel: 1 }
+    musicAcademy: { name: "Music Academy", cost: { gold: 200, wood: 200 }, effect: { unlockTroubadour: true }, level: 0, maxLevel: 1 }
 };
 
 let hasUniversity = false;
@@ -575,8 +575,8 @@ let maxPopulationReached = 1000;
 const units = {
     soldier: { name: "Soldier", cost: { food: 50, gold: 30 }, strength: 3, defense: 8, upgradeBonus: { strength: 1, defense: 1 } },
     archer: { name: "Archer", cost: { food: 70, wood: 30 }, strength: 7, defense: 0, upgradeBonus: { strength: 2, defense: 0.5 } },
-    knight: { name: "Knight", cost: { food: 100, iron: 50 }, strength: 30, defense: 18, upgradeBonus: { strength: 2, defense: 2 } },
-    ballista: { name: "Ballista", cost: { gold: 200, wood: 100, iron: 50 }, strength: 40, defense: 5, upgradeBonus: { strength: 4, defense: 1 } },
+    knight: { name: "Knight", cost: { food: 150, iron: 100 }, strength: 20, defense: 50, upgradeBonus: { strength: 2, defense: 2 } },
+    ballista: { name: "Ballista", cost: { gold: 200, wood: 100, iron: 100 }, strength: 50, defense: 5, upgradeBonus: { strength: 4, defense: 1 } },
     troubadour: { name: "Troubadour", cost: { gold: 80, food: 80 }, strength: 0, defense: 1, upgradeBonus: { strength: 0, defense: 0.5 } }
 };
 
@@ -1066,11 +1066,11 @@ function applySpecializationEffects(specialization) {
     switch (specialization) {
         case 'gatherer':
             Object.keys(resources).forEach(key => {
-                resources[key].perSecond *= 1.1;
+                resources[key].perSecond += 1;
             });
             break;
         case 'healer':
-            populationGrowthRate += 2;
+            populationGrowthRate += 1;
             break;
         case 'fighter':
             hero.strength += 10;
@@ -1292,8 +1292,8 @@ function updateBossStats() {
     const healthPercentage = (bossHealth / bossMaxHealth) * 100;
     bossHealthStat.innerHTML = `<strong>Dragon Emperor Health:</strong> ${Math.round(bossHealth)} / ${bossMaxHealth} (${Math.round(healthPercentage)}%)`;
     
-    const bossStrength = (bossMaxHealth / 100) * (1 + bossAttackCount * 0.2);
-    bossStrengthStat.innerHTML = `<strong>Dragon Emperor Strength:</strong> ${Math.round(bossStrength)} (+${bossAttackCount * 20}% increase)`;
+    const bossStrength = (bossMaxHealth / 100) * (1 + bossAttackCount * 0.5);
+    bossStrengthStat.innerHTML = `<strong>Dragon Emperor Strength:</strong> ${Math.round(bossStrength)} (+${bossAttackCount * 50}% increase)`;
 }
 
 function updateEmpireDefenseAndStrength() {
